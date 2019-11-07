@@ -99,7 +99,7 @@ public interface JsonWebToken extends Principal {
      * for processing in seconds since 1970-01-01T00:00:00Z UTC
      * @return the exp claim.
      */
-    default long getExpirationTime() {
+    default Long getExpirationTime() {
         return getClaim(Claims.exp.name());
     }
 
@@ -108,7 +108,7 @@ public interface JsonWebToken extends Principal {
      * issued in seconds since 1970-01-01T00:00:00Z UTC
      * @return the iat claim
      */
-    default long getIssuedAtTime() {
+    default Long getIssuedAtTime() {
         return getClaim(Claims.iat.name());
     }
 

@@ -75,6 +75,9 @@ public class PublicKeyEndpoint {
     @Inject
     @Claim(standard = Claims.iss)
     private ClaimValue<Optional<String>> iss;
+    @Inject
+    @Claim(standard = Claims.exp)
+    private ClaimValue<Optional<String>> exp;
 
     @PostConstruct
     private void init() {
@@ -552,6 +555,33 @@ public class PublicKeyEndpoint {
         }
         else {
             msg = "No mp.jwt.verify.issuer provided";
+        }
+        JsonObject result = Json.createObjectBuilder()
+            .add("pass", pass)
+            .add("msg", msg)
+            .build();
+        return result;
+    }
+
+    /**
+     * Check a token without an iss can be used when mp.jwt.verify.requireiss=false
+     * @return result of validation test
+     */
+    @GET
+    @Path("/verifyMissingExpIsOk")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("Tester")
+    public JsonObject verifyMissingExpIsOk() {
+        boolean pass = false;
+        String msg;
+
+        if(exp.getValue().isPresent()) {
+            // The exp claim should not be provided for this endpoint
+            msg = String.format("MP-JWT has exp(%s) claim", exp.getValue().get());
+        }
+        else {
+            msg = "endpoint accessed without exp as expected PASS";
+            pass = true;
         }
         JsonObject result = Json.createObjectBuilder()
             .add("pass", pass)
